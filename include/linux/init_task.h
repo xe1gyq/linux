@@ -92,6 +92,14 @@ extern struct nsproxy init_nsproxy;
 	.signalfd_wqh	= __WAIT_QUEUE_HEAD_INITIALIZER(sighand.signalfd_wqh),	\
 }
 
+#ifdef CONFIG_SIGEXIT
+#define INIT_SIGEXIT(tsk) \
+	.notify		= LIST_HEAD_INIT(tsk.notify),			\
+	.monitor	= LIST_HEAD_INIT(tsk.monitor),
+#else
+#define INIT_SIGEXIT(tsk)
+#endif
+
 extern struct group_info init_groups;
 
 #define INIT_STRUCT_PID {						\
@@ -274,6 +282,7 @@ extern struct cred init_cred;
 	.alloc_lock	= __SPIN_LOCK_UNLOCKED(tsk.alloc_lock),		\
 	.journal_info	= NULL,						\
 	INIT_CPU_TIMERS(tsk)						\
+       INIT_SIGEXIT(tsk)                                               \
 	.pi_lock	= __RAW_SPIN_LOCK_UNLOCKED(tsk.pi_lock),	\
 	.timer_slack_ns = 50000, /* 50 usec default slack */		\
 	.pids = {							\
