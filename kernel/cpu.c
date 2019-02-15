@@ -1957,6 +1957,9 @@ EXPORT_SYMBOL_GPL(cpu_bit_bitmap);
 const DECLARE_BITMAP(cpu_all_bits, NR_CPUS) = CPU_BITS_ALL;
 EXPORT_SYMBOL(cpu_all_bits);
 
+const DECLARE_BITMAP(cpu_kthread_bits, CONFIG_NR_CPUS) = CPU_BITS_ALL;
+EXPORT_SYMBOL(cpu_kthread_bits);
+
 #ifdef CONFIG_INIT_ALL_POSSIBLE
 struct cpumask __cpu_possible_mask __read_mostly
 	= {CPU_BITS_ALL};
@@ -1973,6 +1976,16 @@ EXPORT_SYMBOL(__cpu_present_mask);
 
 struct cpumask __cpu_active_mask __read_mostly;
 EXPORT_SYMBOL(__cpu_active_mask);
+
+struct cpumask __cpu_kthread_mask __read_mostly;
+EXPORT_SYMBOL(__cpu_kthread_mask);
+
+static int __init kthread_setup(char *str)
+{
+        cpulist_parse(str, (struct cpumask *)&cpu_kthread_bits);
+        return 1;
+}
+__setup("kthread=", kthread_setup);
 
 void init_cpu_present(const struct cpumask *src)
 {
