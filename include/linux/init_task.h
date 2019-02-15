@@ -27,6 +27,14 @@ extern struct nsproxy init_nsproxy;
 extern struct group_info init_groups;
 extern struct cred init_cred;
 
+#ifdef CONFIG_SIGEXIT
+#define INIT_SIGEXIT(tsk)                               \
+    .notify     = LIST_HEAD_INIT(tsk.notify),           \
+    .monitor    = LIST_HEAD_INIT(tsk.monitor),
+#else
+#define INIT_SIGEXIT(tsk)
+#endif
+
 #ifndef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
 #define INIT_PREV_CPUTIME(x)	.prev_cputime = {			\
 	.lock = __RAW_SPIN_LOCK_UNLOCKED(x.prev_cputime.lock),		\
