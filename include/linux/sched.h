@@ -1068,6 +1068,13 @@ struct task_struct {
 
 	struct page_frag		task_frag;
 
+#ifdef CONFIG_SIGEXIT
+        /* list of processes to notify on death */
+        struct list_head notify;
+        /* list of outstanding monitor requests */
+        struct list_head monitor;
+#endif
+
 #ifdef CONFIG_TASK_DELAY_ACCT
 	struct task_delay_info		*delays;
 #endif

@@ -52,6 +52,10 @@
 #include <asm/cacheflush.h>
 #include "audit.h"	/* audit_signal_info() */
 
+#ifdef CONFIG_SIGEXIT
+#include "death_notify.h"
+#endif
+
 /*
  * SLAB caches for signal bits.
  */
@@ -1803,6 +1807,10 @@ bool do_notify_parent(struct task_struct *tsk, int sig)
 	__wake_up_parent(tsk, tsk->parent);
 	spin_unlock_irqrestore(&psig->siglock, flags);
 
+#ifdef CONFIG_SIGEXIT
+       do_notify_others(tsk, &info);
+#endif
+
 	return autoreap;
 }
 
@@ -1875,6 +1883,11 @@ static void do_notify_parent_cldstop(struct task_struct *tsk,
 	 */
 	__wake_up_parent(tsk, parent);
 	spin_unlock_irqrestore(&sighand->siglock, flags);
+
+#ifdef CONFIG_SIGEXIT
+       do_notify_others(tsk, &info);
+#endif
+
 }
 
 static inline int may_ptrace_stop(void)
