@@ -400,6 +400,13 @@ int irq_setup_affinity(struct irq_desc *desc)
 		if (cpumask_intersects(&mask, nodemask))
 			cpumask_and(&mask, &mask, nodemask);
 	}
+
+       /* This will narrow down the affinity further if we've specified
+        * a reduced cpu_kthread_mask in the boot args.
+        */
+       if (cpumask_intersects(&mask, cpu_kthread_mask))
+       cpumask_and(&mask, &mask, cpu_kthread_mask);
+
 	ret = irq_do_set_affinity(&desc->irq_data, &mask, false);
 	raw_spin_unlock(&mask_lock);
 	return ret;
